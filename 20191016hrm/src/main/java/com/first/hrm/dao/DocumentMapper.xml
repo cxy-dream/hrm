@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.first.hrm.dao.DocumentMapper">
+
+	<resultMap id="result" type="com.first.hrm.bean.Document" autoMapping="true">
+
+		<result column="create_date" property="createDate"></result>
+		<association property="user" column="USER_ID" javaType="com.first.hrm.bean.User"
+					 select="com.first.hrm.dao.UserMapper.selectById">
+		</association>
+
+	</resultMap>
+
+	<sql id="base_select">
+		from hrm_document
+		<where>
+			<if test="TITLE !=null">
+				title like #{title}
+			</if>
+		</where>
+	</sql>
+
+	<insert id="insert" parameterType="com.first.hrm.bean.Document">
+		insert into hrm_document (title,url,remark,CREATE_DATE,USER_ID)
+		values (#{title},#{url},#{remark},#{createDate},#{userId})
+	</insert>
+
+	<select id="selectById" parameterType="int" resultMap="result">
+		select *from hrm_document where  id=#{id}
+	</select>
+
+	<select id="select" resultMap="result">
+		select *from hrm_document
+	</select>
+
+	<update id="update" parameterType="com.first.hrm.bean.Document" >
+
+		update hrm_document set title=#{title},remark=#{remark}
+		 where id=#{id}
+	</update>
+
+
+	<delete id="delete" parameterType="int">
+
+		delete from hrm_document where id=#{id}
+	</delete>
+
+
+	<select id="selectByTitle" parameterType="HashMap" resultMap="result">
+		select * <include refid="base_select"></include>
+
+	</select>
+</mapper>

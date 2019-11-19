@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.first.hrm.dao.JobMapper">
+	<resultMap id="result" type="com.first.hrm.bean.Job">
+
+		<result column="id" property="id"></result>
+
+		<result column="name" property="name"></result>
+
+		<result column="remark" property="remark"></result>
+	</resultMap>
+
+
+
+
+	<select id="select" resultMap="result">
+
+		select * from hrm_job
+	</select>
+
+	<select id="selectById" resultMap="result" parameterType="int">
+		select  *from hrm_job where id = #{id}
+
+	</select>
+
+
+	<update id="update" parameterType="com.first.hrm.bean.Job">
+
+		update hrm_job set name=#{name} ,remark=#{remark} where id=#{id}
+	</update>
+
+
+	<insert id="insert" parameterType="com.first.hrm.bean.Job">
+		insert into hrm_job (name,remark) values (#{name},#{remark})
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from hrm_job where id=#{id}
+	</delete>
+
+
+</mapper>

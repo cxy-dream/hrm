@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.first.hrm.dao.UserMapper">
+
+	<resultMap id="result" type="com.first.hrm.bean.User">
+
+		<result column="id" property="id"></result>
+		<result column="name" property="name"></result>
+		<result column="pass_word" property="passWord"></result>
+		<result column="status" property="status"></result>
+		<result column="CREATE_DATE" property="createDate"></result>
+
+	</resultMap>
+
+	<select id="select" resultMap="result">
+
+		select * from hrm_user
+	</select>
+
+	<select id="selectById" resultMap="result" parameterType="int">
+		select  *from hrm_user where id = #{id}
+
+	</select>
+
+
+	<update id="update" parameterType="com.first.hrm.bean.User">
+
+		update hrm_user set name=#{name}
+		<if test="passWord!=null">
+			,pass_word=#{passWord}
+		</if>
+		where id=#{id}
+	</update>
+
+
+	<insert id="insert" parameterType="com.first.hrm.bean.User">
+		insert into hrm_user (name,pass_word,status) values (#{name},#{passWord},#{status})
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from hrm_user where id=#{id}
+	</delete>
+
+	<update id="checked">
+
+		update hrm_user set status=#{status} where id=#{id}
+	</update>
+
+	<select id="findUserByIdAndPwd" resultMap="result">
+		select * from hrm_user  where name=#{name} and pass_word=#{passWord}
+	</select>
+</mapper>

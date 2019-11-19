@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.first.hrm.dao.EmployeeMapper">
+
+	<resultMap id="result" type="com.first.hrm.bean.Employee" autoMapping="true">
+
+        <result property="postCode" column="POST_CODE"></result>
+		<result column="EMAIL" property="email"></result>
+		<result column="QQ_NUM" property="qqNum"></result>
+		<result column="CARD_ID" property="cardId"></result>
+		<result column="create_date" property="createDate"></result>
+		<association property="job" column="JOB_ID" javaType="com.first.hrm.bean.Job"
+					 select="com.first.hrm.dao.JobMapper.selectById">
+		</association>
+		<association property="dept" column="DEPT_ID" javaType="com.first.hrm.bean.Dept"
+					 select="com.first.hrm.dao.DeptMapper.selectById">
+		</association>
+
+	</resultMap>
+	<resultMap id="info" type="com.first.hrm.bean.EmployeeInfo" autoMapping="true">
+
+		<result column="CARD_ID" property="cardId"></result>
+		<result column="create_date" property="createDate"></result>
+		<association property="job" column="JOB_ID" javaType="com.first.hrm.bean.Job"
+					 select="com.first.hrm.dao.JobMapper.selectById">
+		</association>
+		<association property="dept" column="DEPT_ID" javaType="com.first.hrm.bean.Dept"
+					 select="com.first.hrm.dao.DeptMapper.selectById">
+		</association>
+	</resultMap>
+
+	<select id="select" resultMap="result">
+
+	select *from hrm_employee
+	</select>
+
+	<update id="update" parameterType="com.first.hrm.bean.Employee">
+		update hrm_employee set name=#{name},address=#{address},CARD_ID=#{cardId},POST_CODE=#{postCode},
+		phone=#{phone},QQ_NUM=#{qqNum},EMAIL=#{email},party=#{party},sex=#{sex},birthday=#{birthday},
+		race=#{race},education=#{education},speciality=#{speciality},picture=#{picture},tel=#{tel},
+		remark=#{remark},hobby=#{hobby},CREATE_DATE=#{createDate}
+		 where id=#{id}
+	</update>
+
+	<select id="selectById" resultMap="result">
+		select *from hrm_employee where id=#{id}
+</select>
+
+	<insert id="insert" parameterType="com.first.hrm.bean.Employee" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into hrm_employee
+		(DEPT_ID,JOB_ID,name,CARD_ID,address,POST_CODE,tel,phone,QQ_NUM,EMAIL,sex,party,birthday,race,education,speciality,picture,hobby,remark,create_Date)
+		values (#{dept.id},#{job.id},#{name},#{cardId},#{address},#{postCode},#{tel},#{phone},#{qqNum},
+		#{email},#{sex},#{party},#{birthday},#{race},#{education},#{speciality},#{picture},#{hobby},#{remark},#{createDate})
+	</insert>
+
+    <delete id="delete" parameterType="int">
+        delete from hrm_employee where id=#{id}
+    </delete>
+
+	<select id="findBy"  resultMap="result" parameterType="hashmap">
+
+		select *from hrm_employee
+		<where>
+			<if test="jobId != null">
+			job_Id = #{jobId}
+		</if>
+			<if test="sex!=null">
+				and sex=#{sex}
+			</if>
+			<if test="deptId != null">
+				and dept_Id=#{deptId}
+			</if>
+			<if test="name != null">
+				and name like #{name}
+			</if>
+			<if test="phone != null">
+				and phone like #{phone}
+			</if>
+			<if test="cardId != null">
+				and card_Id like #{cardId}
+			</if>
+		</where>
+		order by id asc
+
+	</select>
+	
+	<!--<select id="findAll" resultMap="info" parameterType="com.first.hrm.bean.EmployeeInfo">-->
+
+		<!--select *from hrm_employee-->
+		<!--<where>-->
+			<!--<if test="jobId != null">-->
+				<!--job_Id = #{jobId}-->
+			<!--</if>-->
+			<!--<if test="sex!=null">-->
+				<!--and sex=#{sex}-->
+			<!--</if>-->
+			<!--<if test="deptId != null">-->
+				<!--and dept_Id=#{deptId}-->
+			<!--</if>-->
+			<!--<if test="name != null">-->
+				<!--and name like #{name}-->
+			<!--</if>-->
+			<!--<if test="phone != null">-->
+				<!--and phone like #{phone}-->
+			<!--</if>-->
+			<!--<if test="cardId != null">-->
+				<!--and card_Id like #{cardId}-->
+			<!--</if>-->
+		<!--</where>-->
+		<!--order by id asc-->
+	<!--</select>-->
+	<select id="findAll" resultType="com.first.hrm.bean.EmployeeInfo" parameterType="hashmap">
+
+		select e.id,d.name as deptName,j.name as jobName,e.name,e.card_id as cardId,e.address,e.phone,
+		e.email,e.sex,e.education,e.create_date as createDate
+		from hrm_employee as e
+		inner join hrm_dept AS d on (e.dept_Id=d.id)
+		inner join hrm_job AS j on (e.job_Id=j.id)
+		<where>
+			<if test="jobId != null">
+				job_Id = #{jobId}
+			</if>
+			<if test="sex != null">
+				and e.sex=#{sex}
+			</if>
+			<if test="name != null">
+				and e.name like #{name}
+			</if>
+			<if test="phone != null">
+				and e.phone like #{phone}
+			</if>
+			<if test="cardId != null">
+				and e.card_Id like #{cardId}
+			</if>
+			<if test="deptId != null">
+                   and e.dept_Id=#{deptId}
+             </if>
+		</where>
+		order by e.id ASC
+	</select>
+
+
+
+
+</mapper>
